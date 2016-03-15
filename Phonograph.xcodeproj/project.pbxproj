@@ -9,7 +9,9 @@
 /* Begin PBXBuildFile section */
 		D86B16731C98143900358AC1 /* Phonograph.h in Headers */ = {isa = PBXBuildFile; fileRef = D86B16721C98143900358AC1 /* Phonograph.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		D86B167A1C98143A00358AC1 /* Phonograph.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D86B166F1C98143900358AC1 /* Phonograph.framework */; };
-		D86B167F1C98143A00358AC1 /* PhonographTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D86B167E1C98143A00358AC1 /* PhonographTests.swift */; };
+		D86B167F1C98143A00358AC1 /* PhonographOutputQueueTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D86B167E1C98143A00358AC1 /* PhonographOutputQueueTests.swift */; };
+		D86B168E1C98162500358AC1 /* PhonographOutputQueue.swift in Sources */ = {isa = PBXBuildFile; fileRef = D86B168D1C98162500358AC1 /* PhonographOutputQueue.swift */; };
+		D86B16921C981D6500358AC1 /* PhonographError.swift in Sources */ = {isa = PBXBuildFile; fileRef = D86B16911C981D6500358AC1 /* PhonographError.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -27,8 +29,10 @@
 		D86B16721C98143900358AC1 /* Phonograph.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Phonograph.h; sourceTree = "<group>"; };
 		D86B16741C98143900358AC1 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		D86B16791C98143A00358AC1 /* PhonographTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PhonographTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		D86B167E1C98143A00358AC1 /* PhonographTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhonographTests.swift; sourceTree = "<group>"; };
+		D86B167E1C98143A00358AC1 /* PhonographOutputQueueTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhonographOutputQueueTests.swift; sourceTree = "<group>"; };
 		D86B16801C98143A00358AC1 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		D86B168D1C98162500358AC1 /* PhonographOutputQueue.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PhonographOutputQueue.swift; sourceTree = "<group>"; };
+		D86B16911C981D6500358AC1 /* PhonographError.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PhonographError.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -73,6 +77,8 @@
 			children = (
 				D86B16741C98143900358AC1 /* Info.plist */,
 				D86B16721C98143900358AC1 /* Phonograph.h */,
+				D86B16911C981D6500358AC1 /* PhonographError.swift */,
+				D86B168D1C98162500358AC1 /* PhonographOutputQueue.swift */,
 			);
 			path = Phonograph;
 			sourceTree = "<group>";
@@ -80,8 +86,8 @@
 		D86B167D1C98143A00358AC1 /* PhonographTests */ = {
 			isa = PBXGroup;
 			children = (
-				D86B167E1C98143A00358AC1 /* PhonographTests.swift */,
 				D86B16801C98143A00358AC1 /* Info.plist */,
+				D86B167E1C98143A00358AC1 /* PhonographOutputQueueTests.swift */,
 			);
 			path = PhonographTests;
 			sourceTree = "<group>";
@@ -194,6 +200,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D86B16921C981D6500358AC1 /* PhonographError.swift in Sources */,
+				D86B168E1C98162500358AC1 /* PhonographOutputQueue.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -201,7 +209,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				D86B167F1C98143A00358AC1 /* PhonographTests.swift in Sources */,
+				D86B167F1C98143A00358AC1 /* PhonographOutputQueueTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -308,6 +316,7 @@
 		D86B16841C98143A00358AC1 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
 				DEFINES_MODULE = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
@@ -318,12 +327,14 @@
 				PRODUCT_BUNDLE_IDENTIFIER = cc.yarr.Phonograph;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 			};
 			name = Debug;
 		};
 		D86B16851C98143A00358AC1 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
 				DEFINES_MODULE = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
