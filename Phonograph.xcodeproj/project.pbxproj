@@ -12,6 +12,7 @@
 		D86B167F1C98143A00358AC1 /* PhonographOutputQueueTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D86B167E1C98143A00358AC1 /* PhonographOutputQueueTests.swift */; };
 		D86B168E1C98162500358AC1 /* PhonographOutputQueue.swift in Sources */ = {isa = PBXBuildFile; fileRef = D86B168D1C98162500358AC1 /* PhonographOutputQueue.swift */; };
 		D86B16921C981D6500358AC1 /* PhonographError.swift in Sources */ = {isa = PBXBuildFile; fileRef = D86B16911C981D6500358AC1 /* PhonographError.swift */; };
+		D882D62E1CA43E2800ABB484 /* PhonographInputQueue.swift in Sources */ = {isa = PBXBuildFile; fileRef = D882D62D1CA43E2800ABB484 /* PhonographInputQueue.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -33,6 +34,7 @@
 		D86B16801C98143A00358AC1 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		D86B168D1C98162500358AC1 /* PhonographOutputQueue.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PhonographOutputQueue.swift; sourceTree = "<group>"; };
 		D86B16911C981D6500358AC1 /* PhonographError.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PhonographError.swift; sourceTree = "<group>"; };
+		D882D62D1CA43E2800ABB484 /* PhonographInputQueue.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PhonographInputQueue.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -78,6 +80,7 @@
 				D86B16741C98143900358AC1 /* Info.plist */,
 				D86B16721C98143900358AC1 /* Phonograph.h */,
 				D86B16911C981D6500358AC1 /* PhonographError.swift */,
+				D882D62D1CA43E2800ABB484 /* PhonographInputQueue.swift */,
 				D86B168D1C98162500358AC1 /* PhonographOutputQueue.swift */,
 			);
 			path = Phonograph;
@@ -201,6 +204,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				D86B16921C981D6500358AC1 /* PhonographError.swift in Sources */,
+				D882D62E1CA43E2800ABB484 /* PhonographInputQueue.swift in Sources */,
 				D86B168E1C98162500358AC1 /* PhonographOutputQueue.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
