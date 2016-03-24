@@ -8,9 +8,11 @@ public class PhonographOutputQueue {
     class PhonographOutputQueueUserData {
         
         let callback: PhonographOutputQueueCallback
+        let bufferStub: NSData
         
-        init(callback: PhonographOutputQueueCallback) {
+        init(callback: PhonographOutputQueueCallback, bufferStub: NSData) {
             self.callback = callback
+            self.bufferStub = bufferStub
         }
     }
     
@@ -19,7 +21,8 @@ public class PhonographOutputQueue {
     private let userData: PhonographOutputQueueUserData
         
     public init(var asbd: AudioStreamBasicDescription, callback: PhonographOutputQueueCallback, buffersCount: UInt32 = 3, bufferSize: UInt32 = 9600) throws {
-        self.userData = PhonographOutputQueueUserData(callback: callback)
+        // TODO: Try to remove unwrap.
+        self.userData = PhonographOutputQueueUserData(callback: callback, bufferStub: NSMutableData(length: Int(bufferSize))!)
         
         let userDataUnsafe = UnsafeMutablePointer<Void>(Unmanaged.passUnretained(self.userData).toOpaque())
 
@@ -82,8 +85,12 @@ public class PhonographOutputQueue {
         // TODO: Think about cast.
         let capacity = Int(inBuffer.memory.mAudioDataBytesCapacity)
         
-        let data = userData.callback(bufferSizeMax: capacity)
+        let dataFromCallback = userData.callback(bufferSizeMax: capacity)
 
+        // Audio queue will stop requesting buffers if output buffer will not contain bytes.
+        // Use empty buffer filled with zeroes.
+        let data = dataFromCallback.length > 0 ? dataFromCallback : userData.bufferStub
+        
         let dataInputRaw = UnsafeMutablePointer<Int8>(data.bytes)
         
         let dataOutputRaw = UnsafeMutablePointer<Int8>(inBuffer.memory.mAudioData)
