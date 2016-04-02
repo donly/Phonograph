@@ -80,6 +80,14 @@ public class PhonographInputQueue {
         }
     }
     
+    public func pause() throws {
+        let code = AudioQueuePause(audioQueueRef)
+        
+        if code != noErr {
+            throw PhonographError.GenericError(code)
+        }
+    }
+        
     private let audioQueueInputCallback: AudioQueueInputCallback = { (inUserData, inAQ, inBuffer, inStartTime, inNumberPacketDescriptions, inPacketDescs) in
         let userData = Unmanaged<PhonographInputQueueUserData>.fromOpaque(COpaquePointer(inUserData)).takeUnretainedValue()
         
