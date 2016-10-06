@@ -1,47 +1,48 @@
 import AudioToolbox
 import Foundation
 
-public typealias PhonographOutputQueueCallback = (bufferSizeMax: Int) -> NSData
+public typealias PhonographOutputQueueCallback = (_ bufferSizeMax: Int) -> Data
 
-public class PhonographOutputQueue {
+open class PhonographOutputQueue {
     
     class PhonographOutputQueueUserData {
         
         let callback: PhonographOutputQueueCallback
-        let bufferStub: NSData
+        let bufferStub: Data
         
-        init(callback: PhonographOutputQueueCallback, bufferStub: NSData) {
+        init(callback: @escaping PhonographOutputQueueCallback, bufferStub: Data) {
             self.callback = callback
             self.bufferStub = bufferStub
         }
     }
     
-    private var audioQueueRef: AudioQueueRef = nil
+    fileprivate var audioQueueRef: AudioQueueRef? = nil
     
-    private let userData: PhonographOutputQueueUserData
+    fileprivate let userData: PhonographOutputQueueUserData
         
-    public init(var asbd: AudioStreamBasicDescription, callback: PhonographOutputQueueCallback, buffersCount: UInt32 = 3, bufferSize: UInt32 = 9600) throws {
+    public init(asbd: AudioStreamBasicDescription, callback: @escaping PhonographOutputQueueCallback, buffersCount: UInt32 = 3, bufferSize: UInt32 = 9600) throws {
+        var asbd = asbd
         // TODO: Try to remove unwrap.
-        self.userData = PhonographOutputQueueUserData(callback: callback, bufferStub: NSMutableData(length: Int(bufferSize))!)
+        self.userData = PhonographOutputQueueUserData(callback: callback, bufferStub: NSMutableData(length: Int(bufferSize))! as Data)
         
-        let userDataUnsafe = UnsafeMutablePointer<Void>(Unmanaged.passUnretained(self.userData).toOpaque())
+        let userDataUnsafe = UnsafeMutableRawPointer(Unmanaged.passUnretained(self.userData).toOpaque())
 
         let code = AudioQueueNewOutput(&asbd, audioQueueOutputCallback, userDataUnsafe, nil, nil, 0, &audioQueueRef)
         
         if code != noErr {
-            throw PhonographError.GenericError(code)
+            throw PhonographError.genericError(code)
         }
         
         for _ in 0..<buffersCount {
-            var bufferRef = AudioQueueBufferRef()
+            var bufferRef: AudioQueueBufferRef? = nil
             
-            let code = AudioQueueAllocateBuffer(audioQueueRef, bufferSize, &bufferRef)
+            let code = AudioQueueAllocateBuffer(audioQueueRef!, bufferSize, &bufferRef)
             
             if code != noErr {
-                throw PhonographError.GenericError(code)
+                throw PhonographError.genericError(code)
             }
             
-            audioQueueOutputCallback(userDataUnsafe, audioQueueRef, bufferRef)
+            audioQueueOutputCallback(userDataUnsafe, audioQueueRef!, bufferRef!)
         }
     }
     
@@ -53,54 +54,54 @@ public class PhonographOutputQueue {
         }
     }
     
-    public func dispose() throws {
-        let code = AudioQueueDispose(audioQueueRef, true)
+    open func dispose() throws {
+        let code = AudioQueueDispose(audioQueueRef!, true)
         
         if code != noErr {
-            throw PhonographError.GenericError(code)
+            throw PhonographError.genericError(code)
         }
         
         audioQueueRef = nil
     }
     
-    public func start() throws {
-        let code = AudioQueueStart(audioQueueRef, nil)
+    open func start() throws {
+        let code = AudioQueueStart(audioQueueRef!, nil)
         
         if code != noErr {
-            throw PhonographError.GenericError(code)
+            throw PhonographError.genericError(code)
         }
     }
     
-    public func stop() throws {
-        let code = AudioQueueStop(audioQueueRef, true)
+    open func stop() throws {
+        let code = AudioQueueStop(audioQueueRef!, true)
         
         if code != noErr {
-            throw PhonographError.GenericError(code)
+            throw PhonographError.genericError(code)
         }
     }
         
-    private let audioQueueOutputCallback: AudioQueueOutputCallback = { (inUserData, inAQ, inBuffer) in
-        let userData = Unmanaged<PhonographOutputQueueUserData>.fromOpaque(COpaquePointer(inUserData)).takeUnretainedValue()
-        
-        // TODO: Think about cast.
-        let capacity = Int(inBuffer.memory.mAudioDataBytesCapacity)
-        
-        let dataFromCallback = userData.callback(bufferSizeMax: capacity)
-
-        // Audio queue will stop requesting buffers if output buffer will not contain bytes.
-        // Use empty buffer filled with zeroes.
-        let data = dataFromCallback.length > 0 ? dataFromCallback : userData.bufferStub
-        
-        let dataInputRaw = UnsafeMutablePointer<Int8>(data.bytes)
-        
-        let dataOutputRaw = UnsafeMutablePointer<Int8>(inBuffer.memory.mAudioData)
-        
-        dataOutputRaw.assignFrom(dataInputRaw, count: data.length)
-        
-        // TODO: Think about cast.        
-        inBuffer.memory.mAudioDataByteSize = UInt32(data.length)
-        
-        // TODO: Handle error.
-        AudioQueueEnqueueBuffer(inAQ, inBuffer, 0, nil)
+    fileprivate let audioQueueOutputCallback: AudioQueueOutputCallback = { (inUserData, inAQ, inBuffer) in
+//        let userData = Unmanaged<PhonographOutputQueueUserData>.fromOpaque(OpaquePointer(inUserData)!).takeUnretainedValue()
+//        
+//        // TODO: Think about cast.
+//        let capacity = Int(inBuffer.pointee.mAudioDataBytesCapacity)
+//        
+//        let dataFromCallback = userData.callback(capacity)
+//
+//        // Audio queue will stop requesting buffers if output buffer will not contain bytes.
+//        // Use empty buffer filled with zeroes.
+//        let data = dataFromCallback.count > 0 ? dataFromCallback : userData.bufferStub
+//        
+//        let dataInputRaw = UnsafeMutablePointer<Int8>(mutating: (data as NSData).bytes.bindMemory(to: Int8.self, capacity: data.count))
+//        
+//        let dataOutputRaw = UnsafeMutablePointer<Int8>(inBuffer.pointee.mAudioData)
+//        
+//        dataOutputRaw.assignFrom(dataInputRaw, count: data.count)
+//        
+//        // TODO: Think about cast.        
+//        inBuffer.pointee.mAudioDataByteSize = UInt32(data.count)
+//        
+//        // TODO: Handle error.
+//        AudioQueueEnqueueBuffer(inAQ, inBuffer, 0, nil)
     }
 }

@@ -1,6 +1,6 @@
 import Foundation
 
-public enum PhonographError: ErrorType {
+public enum PhonographError: Error {
     
-    case GenericError(OSStatus)
+    case genericError(OSStatus)
 }

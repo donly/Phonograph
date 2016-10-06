@@ -19,8 +19,8 @@ class PhonographOutputQueueTests: XCTestCase {
         asbd.mReserved = 0
     }
     
-    private func outputQueueCallback(bufferSizeMax: Int) -> NSData {
-        return NSData()
+    fileprivate func outputQueueCallback(_ bufferSizeMax: Int) -> Data {
+        return Data()
     }
     
     func testInitAndDeinit() {
@@ -38,7 +38,7 @@ class PhonographOutputQueueTests: XCTestCase {
             let _ = try PhonographOutputQueue(asbd: asbd, callback: outputQueueCallback)
             
             XCTFail("Output should not be created successfully.")
-        } catch PhonographError.GenericError(let code) {
+        } catch PhonographError.genericError(let code) {
             XCTAssertEqual(code, kAudio_ParamError)
         } catch {
             XCTFail("Unexpected exception.")
@@ -61,7 +61,7 @@ class PhonographOutputQueueTests: XCTestCase {
             
             try output.dispose()
             try output.dispose()
-        } catch PhonographError.GenericError(let code) {
+        } catch PhonographError.genericError(let code) {
             XCTAssertEqual(code, kAudio_ParamError)
         } catch {
             XCTFail("Unexpected exception.")
