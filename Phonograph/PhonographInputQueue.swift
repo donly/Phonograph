@@ -91,23 +91,24 @@ open class PhonographInputQueue {
         
     fileprivate let audioQueueInputCallback: AudioQueueInputCallback = { (inUserData, inAQ, inBuffer, inStartTime, inNumberPacketDescriptions, inPacketDescs) in
         
-//        let PhonographInputQueueUserData = Unmanaged<PhonographInputQueueUserData>.fromOpaque(inUserData!).takeUnretainedValue()
-//        
-//        // TODO: Avoid cast.
-//        let dataSize = Int(inBuffer.pointee.mAudioDataByteSize)
-//        
-//        let dataInputRaw = UnsafeMutablePointer<Int8>(inBuffer.pointee.mAudioData)
-//        
-//        // Think about avoiding unwrap. Usually this buffer will be always created. But...
-//        let dataOutput = NSMutableData(length: dataSize)!
-//        
-//        let dataOutputRaw = UnsafeMutablePointer<Int8>(mutating: dataOutput.bytes.bindMemory(to: Int8.self, capacity: dataOutput.count))
-//        
-//        dataOutputRaw.assignFrom(dataInputRaw, count: dataSize)
-//        
-//        userData.callback(dataOutput as Data)
-//        
-//        // TODO: Handle error.
-//        AudioQueueEnqueueBuffer(inAQ, inBuffer, 0, nil)
+        let userData = Unmanaged<PhonographInputQueueUserData>.fromOpaque(inUserData!).takeUnretainedValue()
+        
+        // TODO: Avoid cast.
+        let dataSize = Int(inBuffer.pointee.mAudioDataByteSize)
+        
+        let dataInputRaw = inBuffer.pointee.mAudioData.assumingMemoryBound(to: Int8.self)
+        
+        // Think about avoiding unwrap. Usually this buffer will be always created. But...
+        let dataOutput = NSMutableData(length: dataSize)!
+        
+        let dataOutputRaw = UnsafeMutablePointer<Int8>(mutating: dataOutput.bytes.bindMemory(to: Int8.self, capacity: dataOutput.length))
+        
+        dataOutputRaw.assign(from: dataInputRaw, count: dataSize)
+        
+        
+        userData.callback(dataOutput as Data)
+        
+        // TODO: Handle error.
+        AudioQueueEnqueueBuffer(inAQ, inBuffer, 0, nil)
     }
 }

@@ -81,27 +81,28 @@ open class PhonographOutputQueue {
     }
         
     fileprivate let audioQueueOutputCallback: AudioQueueOutputCallback = { (inUserData, inAQ, inBuffer) in
-//        let userData = Unmanaged<PhonographOutputQueueUserData>.fromOpaque(OpaquePointer(inUserData)!).takeUnretainedValue()
-//        
-//        // TODO: Think about cast.
-//        let capacity = Int(inBuffer.pointee.mAudioDataBytesCapacity)
-//        
-//        let dataFromCallback = userData.callback(capacity)
-//
-//        // Audio queue will stop requesting buffers if output buffer will not contain bytes.
-//        // Use empty buffer filled with zeroes.
-//        let data = dataFromCallback.count > 0 ? dataFromCallback : userData.bufferStub
-//        
-//        let dataInputRaw = UnsafeMutablePointer<Int8>(mutating: (data as NSData).bytes.bindMemory(to: Int8.self, capacity: data.count))
-//        
-//        let dataOutputRaw = UnsafeMutablePointer<Int8>(inBuffer.pointee.mAudioData)
-//        
-//        dataOutputRaw.assignFrom(dataInputRaw, count: data.count)
-//        
-//        // TODO: Think about cast.        
-//        inBuffer.pointee.mAudioDataByteSize = UInt32(data.count)
-//        
-//        // TODO: Handle error.
-//        AudioQueueEnqueueBuffer(inAQ, inBuffer, 0, nil)
+        
+        let userData = Unmanaged<PhonographOutputQueueUserData>.fromOpaque(inUserData!).takeUnretainedValue()
+        
+        // TODO: Think about cast.
+        let capacity = Int(inBuffer.pointee.mAudioDataBytesCapacity)
+        
+        let dataFromCallback = userData.callback(capacity)
+
+        // Audio queue will stop requesting buffers if output buffer will not contain bytes.
+        // Use empty buffer filled with zeroes.
+        let data = dataFromCallback.count > 0 ? dataFromCallback : userData.bufferStub
+        
+        let dataInputRaw = UnsafeMutablePointer<Int8>(mutating: (data as NSData).bytes.bindMemory(to: Int8.self, capacity: data.count))
+        
+        let dataOutputRaw = inBuffer.pointee.mAudioData.assumingMemoryBound(to: Int8.self)
+
+        dataOutputRaw.assign(from: dataInputRaw, count: data.count)
+        
+        // TODO: Think about cast.        
+        inBuffer.pointee.mAudioDataByteSize = UInt32(data.count)
+        
+        // TODO: Handle error.
+        AudioQueueEnqueueBuffer(inAQ, inBuffer, 0, nil)
     }
 }
